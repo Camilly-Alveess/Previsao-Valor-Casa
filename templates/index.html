@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Housing Prices Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body
+    style="
+    background-color: rgb(66, 226, 152);
+    background-size: cover;
+    background-blend-mode: overlay;
+    box-sizing: border-box; padding: 0; margin: 0; overflow: hidden; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+    <div
+        style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div
+            style="background-color: white; border-radius: 10px; width: 800px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+            <h2>Previsão de Preço de Casas</h2>
+            <form style="width: 100%;" action="/predict" method="POST">
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Qtd de Quartos</label>
+                            <input type="number" step="1" class="form-control form-control-sm" name="bedrooms"
+                                placeholder="Valores possíveis: 1 a 9" min="1" max="9" required>
+                        </div>
+                        <div class="col">
+                            <label>Qtd de Banheiros</label>
+                            <input type="number" step="1" class="form-control form-control-sm" name="bathrooms"
+                                placeholder="Valores possíveis: 1 a 6" min="1" max="6" required>
+                        </div>
+                        <div class="col">
+                            <label>Tamanho da Casa</label>
+                            <input type="number" step="100" class="form-control form-control-sm" name="sqft_living"
+                                placeholder="Pés quadrados: 400 a 10k" min="400" max="10000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Tamanho do Terreno</label>
+                            <input type="number" step="1000" class="form-control form-control-sm" name="sqft_lot"
+                                placeholder="Valores possíveis: 700 a 500k" min="700" max="500000" required>
+                        </div>
+                        <div class="col">
+                            <label>Qtd de Andares</label>
+                            <input type="number" step="any" class="form-control form-control-sm" name="floors"
+                                placeholder="Valores possíveis: 1 a 4" min="1" max="4" required>
+                        </div>
+                        <div class="col">
+                            <label>Possui Chafariz?</label>
+                            <select class="form-control form-control-sm" name="waterfront" required>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>Condições Gerais</label>
+                            <select class="form-control form-control-sm" name="condition" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Tamanho do Porão em Pés Quadrados</label>
+                            <input type="number" step="1000" class="form-control form-control-sm" name="sqft_basement"
+                                placeholder="Valores possíveis: 0 a 500k" min="0" max="500000" required>
+                        </div>
+                        <div class="col">
+                            <label>Ano de Construção</label>
+                            <input type="number" step="1" class="form-control form-control-sm" name="yr_built"
+                                placeholder="Ano 1900 a 2015" min="1900" max="2015" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Ano de Reforma</label>
+                            <input type="number" step="any" class="form-control form-control-sm" name="yr_renovated"
+                                placeholder="Ano 1900 a 2015" min="1900" max="2015" required>
+                        </div>
+                        <div class="col">
+                            <label>CEP</label>
+                            <input type="number" step="any" class="form-control form-control-sm" name="zipcode"
+                                placeholder="98001 a 98199" min="98001" max="98199" required>
+                        </div>
+                        <div class="col">
+                            <label>Latitude</label>
+                            <input type="number" step="any" class="form-control form-control-sm" name="lat"
+                                placeholder="47.18900 a 47.77800" min="47.18900" max="47.77800" required>
+                        </div>
+                        <div class="col">
+                            <label>Longitude</label>
+                            <input type="number" step="any" class="form-control form-control-sm" name="long"
+                                placeholder="-122.514798 a -121.698246" min="-122.514798" max="-121.698246" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Média de tamanho das casas vizinhas</label>
+                            <input type="number" step="500" class="form-control form-control-sm" name="sqft_living15"
+                                placeholder="Tamanho em Pés Quadrados: 800 a 6k" min="800" max="6000" required>
+                        </div>
+                        <div class="col">
+                            <label>Média de tamanho dos terrenos vizinhos</label>
+                            <input type="number" step="1000" class="form-control form-control-sm" name="sqft_lot15"
+                                placeholder="Tamanho em Pés Quadrados: 800 a 220k" min="800" max="220000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Escolha o Modelo:</label>
+                    <select class="form-control form-control-sm" name="model">
+                        <option value="Random Forest">Random Forest</option>
+                        <option value="LGBM">LGBM</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: end;">
+                    <button type="submit" class="btn btn-primary">Predict</button>
+                </div>
+            </form>
+            <div style="margin-top: 20px;">
+                <h3>Preço Estimado: $ {{result}}</h3>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
