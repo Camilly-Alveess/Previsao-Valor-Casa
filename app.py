@@ -1,16 +1,13 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template
 import pickle
-import numpy as np
 import pandas as pd
 
 app = Flask(__name__)
 
-# Carregar o modelo
-with open('random_forest_model.pkl', 'rb') as f:
+with open('models/random_forest_model.pkl', 'rb') as f:
     random_forest_model = pickle.load(f)
 
-# Supondo que você tenha outro modelo LGBM salvo de maneira similar
-with open('LightGBM_model.pkl', 'rb') as f:
+with open('models/LightGBM_model.pkl', 'rb') as f:
     lgbm_model = pickle.load(f)
 
 
@@ -22,42 +19,39 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Obter os dados do formulário
-        values = request.form.getlist('new_house')
-        df_to_predict = pd.DataFrame({'num_bed': [values[0]],
-                                      'num_bath': [values[1]],
-                                      'size_house': [values[2]],
-                                      'size_lot': [values[3]],
-                                      'num_floors': [values[4]],
-                                      'is_waterfront': [values[5]],
-                                      'condition': [values[6]],
-                                      'size_basement': [values[7]],
-                                      'year_built': [values[8]],
-                                      'renovation_date': [values[9]],
-                                      'zip': [values[10]],
-                                      'latitude': [values[11]],
-                                      'longitude': [values[12]],
-                                      'avg_size_neighbor_houses': [values[13]],
-                                      'avg_size_neighbor_lot': [values[14]]
-                                      })
+    values = {
+        'bedrooms': int(request.form['bedrooms']),
+        'bathrooms': float(request.form['bathrooms']),
+        'sqft_living': int(request.form['sqft_living']),
+        'sqft_lot': int(request.form['sqft_lot']),
+        'floors': float(request.form['floors']),
+        'waterfront': int(request.form['waterfront']),
+        'condition': int(request.form['condition']),
+        'sqft_basement': int(request.form['sqft_basement']),
+        'yr_built': int(request.form['yr_built']),
+        'yr_renovated': int(request.form['yr_renovated']),
+        'zipcode': int(request.form['zipcode']),
+        'lat': float(request.form['lat']),
+        'long': float(request.form['long']),
+        'sqft_living15': int(request.form['sqft_living15']),
+        'sqft_lot15': int(request.form['sqft_lot15'])
+    }
 
-      # Selecionar o modelo
-        model = request.form['model']
-        if model == 'Random Forest':
-            model = random_forest_model
-        else:
-            model = lgbm_model
+    df_to_predict = pd.DataFrame(values, index=[0])
 
-        # Fazer a predição
-        print('\ndf: ', df_to_predict)
-        result = model.predict(df_to_predict)
-        result = "%.2f" % result
+    model_choice = request.form['model']
+    if model_choice == 'Random Forest':
+        model = random_forest_model
+    else:
+        model = lgbm_model
 
-        return render_template('index.html', result=result)
+    df_records = df_to_predict.to_records(index=False)
+    df_records = df_records.tolist()
 
-    except Exception as e:
-        return str(e)
+    result = model.predict(df_records)
+    result = "%.2f" % float(result[0])
+
+    return render_template('index.html', result=result)
 
 
 if __name__ == '__main__':
