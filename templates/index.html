@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Housing Prices Prediction</title>
+    <title>Predição do Valor de Casa</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
@@ -17,13 +17,15 @@
     background-size: cover;
     background-blend-mode: overlay;
     box-sizing: border-box; padding: 0; margin: 0; overflow: hidden; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
-    <div
-        style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;">
-        <div
-            style="background-color: white; border-radius: 10px; width: 800px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+    <div style="width: 100vw; height: 100vh;">
+        <header style="width: 100%; height: 40px; background-color: white;
+            display: flex; justify-content: center; align-items: start;">
             <h2>Previsão de Preço de Casas</h2>
-            <form style="width: 100%;" action="/predict" method="POST">
-
+        </header>
+        <div style="width: 100%; display: flex; margin-top: 10px;
+              align-items: center; justify-content: center;">
+            <form style="width: 90%; background-color: white; 
+            border-radius: 10px; padding: 20px;" action="/predict" method="POST">
                 <div class="form-group">
                     <div class="form-row">
                         <div class="col">
@@ -138,13 +140,11 @@
                         <option value="LGBM">LGBM</option>
                     </select>
                 </div>
-                <div style="display: flex; justify-content: end;">
+                <div style="display: flex; justify-content: space-between;">
+                    <h3>Preço Estimado: {{result}}</h3>
                     <button type="submit" class="btn btn-primary">Predict</button>
                 </div>
             </form>
-            <div style="margin-top: 20px;">
-                <h3>Preço Estimado: $ {{result}}</h3>
-            </div>
         </div>
     </div>
 </body>
